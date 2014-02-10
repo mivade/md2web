@@ -20,13 +20,13 @@ import markdown
 # This is the template file to use. This allows for common elements
 # across all pages. This can be overridden with the command line
 # argument --template.
-default_template_file = "template.html"
+DEFAULT_TEMPLATE_FILE = "template.html"
 
 # File extensions that signify Markdown files.
-_FILE_EXTENSIONS = ["md", "text", "markdown"]
+_FILE_EXTENSIONS = ["md", "markdown", "mkd", "mdown", "text"]
 
 # Markdown extensions to use.
-md_extensions = ["extra", "codehilite", "latex"]
+md_extensions = ["extra", "codehilite", "meta", "wikilinks", "latex"]
 
 # Functions
 # ---------
@@ -67,9 +67,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--overwrite", action="store_true",
                         help="Overwrite existing files.")
-    parser.add_argument("--template", default=default_template_file,
+    parser.add_argument("--template", default=DEFAULT_TEMPLATE_FILE,
                         help="HTML template file to use for conversion." + \
-                        "Defaults to" + default_template_file)
+                        "Defaults to" + DEFAULT_TEMPLATE_FILE)
     parser.add_argument("--no-template", action="store_true",
                         help="Don't use a template file.")
     parser.add_argument("-r", "--recursive", action="store_true",
