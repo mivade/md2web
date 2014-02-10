@@ -31,21 +31,17 @@ md_extensions = ["extra", "codehilite", "meta", "wikilinks", "latex"]
 # Functions
 # ---------
 
-def convert(filename, template_filename=None, overwrite=False):
+def convert(filename, template_filename=None):
     """Compile the Markdown file filename into HTML."""
     output_filename = filename.split('.')[0] + '.html'
-    if os.path.exists(output_filename) and not overwrite:
-        print(output_filename, "exists and won't be overwritten.")
-        return
-    elif overwrite:
-        print(output_filename, "exists. Overwriting.")
-    else:
-        print("Creating", output_filename)
     md = markdown.Markdown(extensions=md_extensions, output_format="xhtml1")
     with open(filename, 'r') as md_file:
         md_text = md_file.read()
-        title = md_text.split('\n')[0].strip()
         html = md.convert(md_text)
+    try:
+        title = md.Meta['title'][0]
+    except KeyError:
+        title = md_text.split('\n')[0].strip()
     if template_filename:
         with open(template_filename, 'r') as template_file:
             template = template_file.read()
@@ -55,32 +51,24 @@ def convert(filename, template_filename=None, overwrite=False):
     with open(output_filename, 'w') as output_file:
         output_file.write(html)
 
-def convert_directory(path, recurse=False, template_filename=None,
-                      overwrite=False):
-    """Convert all Markdown files in the given path."""
-    # see https://mayankjohri.wordpress.com/2008/07/02/create-list-of-files-in-a-dir-tree/
-
 # Main
 # ----
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--overwrite", action="store_true",
-                        help="Overwrite existing files.")
+    ## parser.add_argument("--overwrite", action="store_true",
+    ##                     help="Overwrite existing files.")
     parser.add_argument("--template", default=DEFAULT_TEMPLATE_FILE,
-                        help="HTML template file to use for conversion." + \
-                        "Defaults to" + DEFAULT_TEMPLATE_FILE)
+                        help="HTML template file to use for conversion. " + \
+                        "Defaults to " + DEFAULT_TEMPLATE_FILE)
     parser.add_argument("--no-template", action="store_true",
                         help="Don't use a template file.")
-    parser.add_argument("-r", "--recursive", action="store_true",
-                        help="Recurse through all directories and process " + \
-                        "all Markdown files found.")
-    parser.add_argument("markdown_file", nargs="?", default="__DIR__",
-                        help="The Markdown file to read. If no file is " + \
-                        "given, all Markdown files in the current " + \
-                        "working directory (and subdirectories if -r is " + \
-                        "given) will be processed.")
+    ## parser.add_argument("-r", "--recursive", action="store_true",
+    ##                     help="Recurse through all directories and process " + \
+    ##                     "all Markdown files found.")
+    parser.add_argument("markdown_file", nargs=1, default="__DIR__",
+                        help="The Markdown file to convert to HTML.")
     args = vars(parser.parse_args())
     if args['no_template']:
         args['template'] = None
-    convert(args['markdown_file'], args['template'], args['overwrite'])
+    convert(args['markdown_file'][0], args['template'])

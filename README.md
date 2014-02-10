@@ -4,7 +4,18 @@ md2web
 Command line usage
 ------------------
 
-`python md2web.py -h`
+```
+usage: md2web.py [-h] [--template TEMPLATE] [--no-template] markdown_file
+
+positional arguments:
+  markdown_file        The Markdown file to convert to HTML.
+  
+  optional arguments:
+    -h, --help           show this help message and exit
+	--template TEMPLATE  HTML template file to use for conversion. Defaults to
+                         template.html
+	--no-template        Don't use a template file.						 
+```
 
 Templates
 ---------
@@ -18,8 +29,12 @@ somewhere in the document:
   placed.
 * `$TITLE`: The document title to place between `<title>` and
   `</title>`.
+  
+<!--
+TODO:
 * `$TIMESTAMP` (optional): Adds a timestamp indicating the last time
-  the file was modified. (Not yet implemented)
+  the file was modified.
+-->
   
 Bugs and Pitfalls
 -----------------
@@ -27,7 +42,18 @@ Bugs and Pitfalls
 * Right now, the first line of each source file *must* be the page
   title (the text that replaces `$TITLE`). In the future, this may
   change to something a little safer.
-* Not overwriting files is not very intelligent at the moment. Without
-  the `--overwrite` option, files will never be overwritten. In the
-  future, it will check for recent modifications to the source file
-  and automatically overwrite if necessary.
+* I decided to have `make` handle things like determining whether or
+  not an HTML file needs updating. See the example makefile in the
+  `examples` directory.
+  
+License
+-------
+
+`md2web` is released under the terms of the GNU GPL version 3. This
+does not include the `mdx_latex.py` file
+[originally authored][mdx_latex] by Justin Bruce Van Horne and
+released under the [Creative Commons Public Domain Mark 1.0][CCPDL1]
+license.
+
+[mdx_latex]: https://github.com/justinvh/Markdown-LaTeX
+[CCPDL1]: http://creativecommons.org/publicdomain/mark/1.0/
