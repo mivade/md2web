@@ -31,8 +31,43 @@ md_extensions = ["extra", "codehilite", "meta", "wikilinks", "latex"]
 # Functions
 # ---------
 
-def convert(filename, template_filename=None):
-    """Compile the Markdown file filename into HTML."""
+def init_cli_args():
+    """Setup command line options. Returns an ArgumentParser object."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--template", default=DEFAULT_TEMPLATE_FILE,
+        help="HTML template file to use for conversion. Defaults to " \
+        + DEFAULT_TEMPLATE_FILE)
+    parser.add_argument(
+        "--base-url", default="",
+        help="Base URL to replace $ROOT in the template file. " + \
+        "Useful for specifying site-wide CSS file locations, for example." + \
+        " Defaults to ''. This assumes the trailing / is in the " + \
+        "template file and so strips any trailing / character from " + \
+        "the option.")
+    parser.add_argument(
+        "--no-template", action="store_true",
+        help="Don't use a template file.")
+    parser.add_argument(
+        "markdown_file", nargs=1, default="__DIR__",
+        help="The Markdown file to convert to HTML.")
+    return parser
+
+def convert(filename, base_url, template_filename=None):
+    """
+    Compile the Markdown file filename into HTML.
+
+    Parameters
+    ----------
+    filename : str
+        Filename of the Markdown file to convert to HTML.
+    base_url : str
+        Base URL to find/replace $ROOT in the template file.
+    template_file : str or None, optional
+        If a str, specifies the template file to use when converting
+        to HTML.
+
+    """
     output_filename = filename.split('.')[0] + '.html'
     md = markdown.Markdown(extensions=md_extensions, output_format="xhtml1")
     with open(filename, 'r') as md_file:
@@ -45,7 +80,13 @@ def convert(filename, template_filename=None):
     if template_filename:
         with open(template_filename, 'r') as template_file:
             template = template_file.read()
+        try:
+            if base_url[-1] == '/':
+                base_url = base_url[:-1]
+        except IndexError:
+            pass
         template = re.sub("\$TITLE", title, template)
+        template = re.sub("\$ROOT", base_url, template)
         template = re.sub("\$CONTENT", html, template)
         html = template
     with open(output_filename, 'w') as output_file:
@@ -55,20 +96,8 @@ def convert(filename, template_filename=None):
 # ----
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    ## parser.add_argument("--overwrite", action="store_true",
-    ##                     help="Overwrite existing files.")
-    parser.add_argument("--template", default=DEFAULT_TEMPLATE_FILE,
-                        help="HTML template file to use for conversion. " + \
-                        "Defaults to " + DEFAULT_TEMPLATE_FILE)
-    parser.add_argument("--no-template", action="store_true",
-                        help="Don't use a template file.")
-    ## parser.add_argument("-r", "--recursive", action="store_true",
-    ##                     help="Recurse through all directories and process " + \
-    ##                     "all Markdown files found.")
-    parser.add_argument("markdown_file", nargs=1, default="__DIR__",
-                        help="The Markdown file to convert to HTML.")
+    parser = init_cli_args()
     args = vars(parser.parse_args())
     if args['no_template']:
         args['template'] = None
-    convert(args['markdown_file'][0], args['template'])
+    convert(args['markdown_file'][0], args['base_url'], args['template'])
