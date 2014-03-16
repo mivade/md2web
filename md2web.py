@@ -26,7 +26,7 @@ DEFAULT_TEMPLATE_FILE = "template.html"
 _FILE_EXTENSIONS = ["md", "markdown", "mkd", "mdown", "text"]
 
 # Markdown extensions to use.
-md_extensions = ["extra", "codehilite", "meta", "wikilinks", "latex"]
+md_extensions = ["extra", "codehilite", "meta", "wikilinks"] #, "latex"]
 
 # Functions
 # ---------
