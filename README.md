@@ -17,6 +17,15 @@ positional arguments:
 	--no-template        Don't use a template file.						 
 ```
 
+Requirements
+------------
+
+* [Python Markdown][]
+* [Jinja2][]
+
+[Python Markdown]: http://pythonhosted.org/Markdown/index.html
+[Jinja2]: http://jinja.pocoo.org/
+
 Templates
 ---------
 
@@ -30,30 +39,24 @@ somewhere in the document:
 * `$TITLE`: The document title to place between `<title>` and
   `</title>`.
   
-<!--
-TODO:
-* `$TIMESTAMP` (optional): Adds a timestamp indicating the last time
-  the file was modified.
--->
-  
 Bugs and Pitfalls
 -----------------
 
 * Right now, the first line of each source file *must* be the page
   title (the text that replaces `$TITLE`). In the future, this may
   change to something a little safer.
-* I decided to have `make` handle things like determining whether or
-  not an HTML file needs updating. See the example makefile in the
-  `examples` directory.
+* Rather than build in code to determine whether or not a file needs
+  to be rebuilt, something like `make` should be used instead. See the
+  example makefile in the `examples` directory.
+  
+TODO
+----
+
+[ ] Update usage information to reflect using Jinja2.
+
+[ ] Add support for more output formats (via command-line arguments).
   
 License
 -------
 
-`md2web` is released under the terms of the GNU GPL version 3. This
-does not include the `mdx_latex.py` file
-[originally authored][mdx_latex] by Justin Bruce Van Horne and
-released under the [Creative Commons Public Domain Mark 1.0][CCPDL1]
-license.
-
-[mdx_latex]: https://github.com/justinvh/Markdown-LaTeX
-[CCPDL1]: http://creativecommons.org/publicdomain/mark/1.0/
+`md2web` is released under the terms of the GNU GPL version 3.

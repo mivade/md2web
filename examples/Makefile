@@ -1,4 +1,4 @@
-CC = ./md2web.py --template template.html_
+CC = ../md2web.py --template ../templates/html5.html
 
 all: $(shell find . -name "*.md" | sed 's/md/html/')
 
