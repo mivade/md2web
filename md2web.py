@@ -34,6 +34,9 @@ def init_cli_args():
         "template file and so strips any trailing / character from " + \
         "the option.")
     parser.add_argument(
+        "--template", default='',
+        help="Jinja2 template file to use for conversion.")
+    parser.add_argument(
         "--no-template", action="store_true",
         help="Don't use a template file.")
     parser.add_argument(
@@ -77,7 +80,7 @@ def convert(filename, base_url, template_filename=None):
             pass
 
         # Render the template with the content
-        html = template.render(title=title, content=content)
+        html = template.render(title=title, content=content, root=base_url)
     else:
         html = content
 
@@ -90,7 +93,7 @@ def convert(filename, base_url, template_filename=None):
 
 if __name__ == "__main__":
     parser = init_cli_args()
-    args = vars(parser.parse_args())
-    if args['no_template']:
-        args['template'] = None
-    convert(args['markdown_file'][0], args['base_url'], args['template'])
+    args = parser.parse_args()
+    if args.no_template or args.template == '':
+        args.template = None
+    convert(args.markdown_file[0], args.base_url, args.template)
